@@ -1,7 +1,6 @@
 package alexiuscrow.diploma.endpoints;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -15,8 +14,8 @@ public class LocalitiesResources {
 	
 	@GET
 	@Produces("application/json")
-	public List<Localities> getLocalities() throws SQLException{
-		return Factory.getInstance().getLicalities().getAllLocalities();
+	public Localities getLocalities() throws SQLException{
+		return Factory.getInstance().getLicalities().getAllLocalities().get(0);
 	}
 
 }

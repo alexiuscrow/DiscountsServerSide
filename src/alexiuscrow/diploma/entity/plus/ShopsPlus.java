@@ -14,8 +14,6 @@ import alexiuscrow.diploma.entity.enums.Categories;
 
 @XmlRootElement
 @Entity
-//@MappedSuperclass
-//@DiscriminatorValue(value="plus")
 @Immutable
 public class ShopsPlus{
 	
@@ -23,22 +21,30 @@ public class ShopsPlus{
 	@GeneratedValue
 	@Column(name="id")
 	protected int id;
+	
 	@Column(name="name", length=45)
 	protected String name;
+	
 	@Column(name="category")
 	@Enumerated(EnumType.STRING)
 	protected Categories category;
+	
 	@Column(name="latitude")
 	protected Double latitude;
+	
 	@Column(name="longitude")
 	protected Double longitude;
+	
 	@Column(name="locality_id")
 	protected int localityId;
+	
 	@Column(name="address", length=80)
 	protected String address;
-	@Column(name="locality_name")
+	
+	@Column(name="locality_name", insertable=false, updatable=false)
 	private String localityName;
-	@Column(name="distance")
+	
+	@Column(name="distance", insertable=false, updatable=false)
 	private Integer distance;
 	
 	public ShopsPlus(){}

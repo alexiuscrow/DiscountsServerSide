@@ -19,17 +19,23 @@ public class Shops {
 	@GeneratedValue
 	@Column(name="id")
 	protected int id;
+	
 	@Column(name="name", length=45)
 	protected String name;
+	
 	@Column(name="category")
 	@Enumerated(EnumType.STRING)
 	protected Categories category;
+	
 	@Column(name="latitude")
 	protected Double latitude;
+	
 	@Column(name="longitude")
 	protected Double longitude;
+	
 	@Column(name="locality_id")
 	protected int localityId;
+	
 	@Column(name="address", length=80)
 	protected String address;
 	
@@ -101,6 +107,14 @@ public class Shops {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	@Override
+	public String toString() {
+		return String
+				.format("Shops [id=%s, name=%s, category=%s, latitude=%s, longitude=%s, localityId=%s, address=%s]",
+						id, name, category, latitude, longitude, localityId,
+						address);
 	}
 
 
