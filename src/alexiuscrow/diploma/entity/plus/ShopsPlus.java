@@ -90,10 +90,8 @@ public class ShopsPlus{
 			shopPlus = eatUp(shop, shopPlus);
 			shopPlus.distance = GeoFinder.getDistance(lat, lng, shop);
 			Criteria cr = session.createCriteria(Localities.class);
-			System.out.println(shopPlus);
-			cr.add(Restrictions.eq("id", shop.getId()));
+			cr.add(Restrictions.eq("id", shop.getLocalityId()));
 			locality = (Localities) cr.uniqueResult();
-			System.out.println(locality.getName());
 			shopPlus.setLocalityName(locality.getName());
 			shopsPlus.add(shopPlus);
 		}
