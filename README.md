@@ -1,6 +1,6 @@
 # Discounts
 
-#API *v1*
+API *v1*
 -------------
 ###GET
 what                         | how                                             | realized
