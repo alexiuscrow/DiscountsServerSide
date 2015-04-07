@@ -37,13 +37,9 @@ public class DiscountsPlus {
 		for (Shops shop: shops){
 			shop.setDistance(GeoFinder.getDistance(lat, lng, shop));
 			
-			System.out.println(shop);
-			
 			Criteria cr = session.createCriteria(Localities.class);
 			cr.add(Restrictions.eq("id", shop.getLocalityId()));
 			Localities locality = (Localities) cr.uniqueResult();
-			
-			System.out.println(locality);
 			
 			cr = session.createCriteria(Discounts.class);
 			cr.add(Restrictions.eq("shopId", shop.getId()));
