@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import alexiuscrow.diploma.dao.plus.DiscountsPlusDAO;
+import alexiuscrow.diploma.entity.Shops;
 import alexiuscrow.diploma.entity.plus.DiscountsPlus;
 import alexiuscrow.diploma.util.GeoFinder;
 import alexiuscrow.diploma.util.HibernateUtil;
@@ -19,17 +20,22 @@ public class DiscountsPlusDAOImpl implements DiscountsPlusDAO {
 	public List<DiscountsPlus> getNearestDiscounts(Double lat, Double lng, Integer radius) 
 			throws SQLException {
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		session.setDefaultReadOnly(false);
 		Transaction tx = null;
-	    List discounts = null;
+		
+		List<DiscountsPlus> discountsPlus = null;
+	    List<Shops> shops = null;
+	    
 	    try{
 	       tx = session.beginTransaction();
-	       Query query = session.createSQLQuery("call diplomadb.get_nearest_discounts(?,?,?);")
-	    		   .addEntity(DiscountsPlus.class)
+	       Query query = session.createSQLQuery("call diplomadb.get_nearest_shops_only(?,?,?);")
+	    		   .addEntity(Shops.class)
 	    		   .setString(0, lat.toString())
 	    		   .setString(1, lng.toString())
 	    		   .setString(2, radius.toString());
-	       discounts = query.setReadOnly(true).list(); 
+	       shops = query.list(); 
+	       
+	       discountsPlus = DiscountsPlus.eatNourishing(shops, lat, lng, session);;
+	       
 	       tx.commit();
 	    }catch (HibernateException e) {
 	       if (tx!=null) tx.rollback();
@@ -37,30 +43,35 @@ public class DiscountsPlusDAOImpl implements DiscountsPlusDAO {
 	    }finally {
 	       session.close(); 
 	    }
-        return discounts;
+        return discountsPlus;
 	}
 
 	@Override
 	public List<DiscountsPlus> getAllLocalityDiscounts(Double lat, Double lng)
 			throws SQLException {
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		session.setDefaultReadOnly(false);
 		Transaction tx = null;
-	    List discounts = null;
+		
+		List<DiscountsPlus>  discountsPlus = null;
+		List<Shops>  shops = null;
+		
 	    String localityName = GeoFinder.getLocalityName(lat, lng);
+//	    String localityName = "Chernihiv";
 	    
 	    if (localityName == null)
 	    	return null;
 	    
-	    
 	    try{
 	       tx = session.beginTransaction();
-	       Query query = session.createSQLQuery("call diplomadb.get_locality_discounts(?,?,?);")
-	    		   .addEntity(DiscountsPlus.class)
+	       Query query = session.createSQLQuery("call diplomadb.get_locality_shops_only(?,?,?);")
+	    		   .addEntity(Shops.class)
 	    		   .setString(0, lat.toString())
 	    		   .setString(1, lng.toString())
-	    		   .setString(2, localityName).setReadOnly(true);
-	       discounts = query.list(); 
+	    		   .setString(2, localityName);
+	       shops = query.list();
+	       
+	       discountsPlus = DiscountsPlus.eatNourishing(shops, lat, lng, session);
+	       
 	       tx.commit();
 	    }catch (HibernateException e) {
 	       if (tx!=null) tx.rollback();
@@ -68,7 +79,7 @@ public class DiscountsPlusDAOImpl implements DiscountsPlusDAO {
 	    }finally {
 	       session.close(); 
 	    }
-        return discounts;
+        return discountsPlus;
 	}
 
 }

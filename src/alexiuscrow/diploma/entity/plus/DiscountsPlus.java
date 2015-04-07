@@ -1,173 +1,89 @@
 package alexiuscrow.diploma.entity.plus;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hibernate.annotations.Immutable;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+
+import alexiuscrow.diploma.entity.Discounts;
+import alexiuscrow.diploma.entity.Localities;
+import alexiuscrow.diploma.entity.Shops;
+import alexiuscrow.diploma.util.GeoFinder;
 
 @XmlRootElement
-@Immutable
-
 public class DiscountsPlus {
 	
-	@Id
-	@GeneratedValue
-	@Column(name="id")
-	private Integer id;
-	
-	@Column(name="title")
-	private String title;
-	
-	@Column(name="start_date")
-	@Temporal(TemporalType.DATE) 
-	private Calendar startDate;
-	
-	@Column(name="end_date")
-	@Temporal(TemporalType.DATE) 
-	private Calendar endDate;
-	
-	@Column(name="description")
-	private String description;
-	
-	@Column(name="image")
-	private String imageUrl;
-	
-	@Column(name="shop_name", insertable=false, updatable=false)
-	private String shopName;
-	
-	@Column(name="shop_id")
-	private Integer shopId;
-	
-	@Column(name="locality_name", insertable=false, updatable=false)
-	private String localityName;
-	
-	@Column(name="address", insertable=false, updatable=false)
-	private String address;
-	
-	@Column(name="distance", insertable=false, updatable=false)
-	private Double distance;
+	private Discounts discount;
+	private Shops shop;
+	private Localities locality;
 	
 	public DiscountsPlus() {
 	}
 
-	public DiscountsPlus(int id, String title, String description, Calendar startDate,
-			Calendar endDate, String imageUrl, String shopName, int shopId,
-			String localityName, String address, Double distance) {
-		this.id = id;
-		this.title = title;
-		this.description = description;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.imageUrl = imageUrl;
-		this.shopName = shopName;
-		this.shopId = shopId;
-		this.localityName = localityName;
-		this.address = address;
-		this.distance = distance;
+	public DiscountsPlus(Discounts discount, Shops shop, Localities locality) {
+		this.discount = discount;
+		this.shop = shop;
+		this.locality = locality;
 	}
 
-	public int getId() {
-		return id;
+	public static ArrayList<DiscountsPlus> eatNourishing(List<Shops> shops, Double lat, Double lng, Session session){
+		ArrayList<DiscountsPlus> discountsPlus = new ArrayList<DiscountsPlus>();
+		DiscountsPlus discountPlus = null;
+		
+		for (Shops shop: shops){
+			shop.setDistance(GeoFinder.getDistance(lat, lng, shop));
+			
+			System.out.println(shop);
+			
+			Criteria cr = session.createCriteria(Localities.class);
+			cr.add(Restrictions.eq("id", shop.getLocalityId()));
+			Localities locality = (Localities) cr.uniqueResult();
+			
+			System.out.println(locality);
+			
+			cr = session.createCriteria(Discounts.class);
+			cr.add(Restrictions.eq("shopId", shop.getId()));
+			List<Discounts> discounts = cr.list();
+			
+			for (Discounts discount: discounts){
+				discountPlus = new DiscountsPlus();
+				discountPlus.shop = shop;
+				discountPlus.locality = locality;
+				discountPlus.discount = discount;
+				
+				discountsPlus.add(discountPlus);
+			}
+			
+		}
+		return discountsPlus;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public Discounts getDiscount() {
+		return discount;
 	}
 
-	public String getTitle() {
-		return title;
+	public void setDiscount(Discounts discounts) {
+		this.discount = discounts;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public Shops getShop() {
+		return shop;
 	}
 
-	public String getDescription() {
-		return description;
+	public void setShop(Shops shop) {
+		this.shop = shop;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public Localities getLocality() {
+		return locality;
 	}
 
-	public Calendar getStartDate() {
-		return startDate;
+	public void setLocality(Localities locality) {
+		this.locality = locality;
 	}
-
-	public void setStartDate(Calendar startDate) {
-		this.startDate = startDate;
-	}
-
-	public Calendar getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Calendar endDate) {
-		this.endDate = endDate;
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
-	public String getShopName() {
-		return shopName;
-	}
-
-	public void setShopName(String shopName) {
-		this.shopName = shopName;
-	}
-
-	public int getShopId() {
-		return shopId;
-	}
-
-	public void setShopId(int shopId) {
-		this.shopId = shopId;
-	}
-
-	public String getLocalityName() {
-		return localityName;
-	}
-
-	public void setLocalityName(String localityName) {
-		this.localityName = localityName;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public Double getDistace() {
-		return distance;
-	}
-
-	public void setDistace(Double distace) {
-		this.distance = distace;
-	}
-
-	@Override
-	public String toString() {
-		return String
-				.format("DiscountsPlus [id=%s, title=%s, startDate=%s, endDate=%s, description=%s, imageUrl=%s, shopName=%s, shopId=%s, localityName=%s, address=%s, distance=%s]",
-						id, title, startDate, endDate, description, imageUrl,
-						shopName, shopId, localityName, address, distance);
-	}
-
-	
 	
 }

@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import alexiuscrow.diploma.entity.enums.Categories;
@@ -38,6 +39,9 @@ public class Shops {
 	
 	@Column(name="address", length=80)
 	protected String address;
+	
+	@Transient
+	private Double distance;
 	
 	public Shops() {
 	}
@@ -110,12 +114,20 @@ public class Shops {
 		this.address = address;
 	}
 
+	public Double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(Double distance) {
+		this.distance = distance;
+	}
+
 	@Override
 	public String toString() {
 		return String
-				.format("Shops [id=%s, name=%s, category=%s, latitude=%s, longitude=%s, localityId=%s, address=%s]",
+				.format("Shops [id=%s, name=%s, category=%s, latitude=%s, longitude=%s, localityId=%s, address=%s, distance=%s]",
 						id, name, category, latitude, longitude, localityId,
-						address);
+						address, distance);
 	}
 
 

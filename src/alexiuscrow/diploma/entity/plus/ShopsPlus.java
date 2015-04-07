@@ -17,7 +17,6 @@ import alexiuscrow.diploma.util.GeoFinder;
 @XmlRootElement
 public class ShopsPlus{
 	
-
 	protected Integer id;
 	protected String name;
 	protected Categories category;
@@ -25,8 +24,8 @@ public class ShopsPlus{
 	protected Double longitude;
 	protected Integer localityId;
 	protected String address;
-	private String localityName;
-	private Double distance;
+	protected String localityName;
+	protected Double distance;
 	
 	public ShopsPlus(){}
 	
@@ -54,35 +53,21 @@ public class ShopsPlus{
 		this.address = shop.getAddress();
 	}
 	
-	public static ShopsPlus eatUp(Shops fromShop, ShopsPlus toShop){
-		toShop.setId(fromShop.getId());
-		toShop.setName(fromShop.getName());
-		toShop.setCategory(fromShop.getCategory());
-		toShop.setLatitude(fromShop.getLatitude());
-		toShop.setLongitude(fromShop.getLongitude());
-		toShop.setLocalityId(fromShop.getLocalityId());
-		toShop.setAddress(fromShop.getAddress());
+	public static ShopsPlus eatUp(Shops fromShop, ShopsPlus toShopPlus){
+		toShopPlus.setId(fromShop.getId());
+		toShopPlus.setName(fromShop.getName());
+		toShopPlus.setCategory(fromShop.getCategory());
+		toShopPlus.setLatitude(fromShop.getLatitude());
+		toShopPlus.setLongitude(fromShop.getLongitude());
+		toShopPlus.setLocalityId(fromShop.getLocalityId());
+		toShopPlus.setAddress(fromShop.getAddress());
 
-		return toShop;
-	}
-	
-	public static ArrayList<ShopsPlus> eatUp(List<Shops> shops){
-		ArrayList<ShopsPlus> shopsPlus = new ArrayList<ShopsPlus>();
-		ShopsPlus shopPlus = new ShopsPlus();
-		
-		for(Shops shop: shops){
-			shopPlus = eatUp(shop, shopPlus);
-			shopsPlus.add(shopPlus);
-		}
-		
-		return shopsPlus;
+		return toShopPlus;
 	}
 	
 	public static ArrayList<ShopsPlus> eatNourishing(List<Shops> shops, Double lat, Double lng, Session session){
 		ArrayList<ShopsPlus> shopsPlus = new ArrayList<ShopsPlus>();
 		ShopsPlus shopPlus = null;
-		
-//		Criteria cr  = session.createCriteria(Localities.class);
 		Localities locality = null;
 		
 		for(Shops shop: shops){
