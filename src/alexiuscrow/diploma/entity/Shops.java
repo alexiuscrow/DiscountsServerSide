@@ -18,12 +18,12 @@ public class Shops {
 	@Id
 	@GeneratedValue
 	@Column(name="id")
-	protected int id;
+	protected Integer id;
 	
 	@Column(name="name", length=45)
 	protected String name;
 	
-	@Column(name="category")
+	@Column(name="category", columnDefinition="ENUM('undefined','auto','children_prod','food','game','book','electronics','beuty_and_health','fashion','footwear','clothing','sports','homewere','pet_prod','services','gift_and_flowers')")
 	@Enumerated(EnumType.STRING)
 	protected Categories category;
 	
@@ -34,7 +34,7 @@ public class Shops {
 	protected Double longitude;
 	
 	@Column(name="locality_id")
-	protected int localityId;
+	protected Integer localityId;
 	
 	@Column(name="address", length=80)
 	protected String address;
@@ -42,8 +42,8 @@ public class Shops {
 	public Shops() {
 	}
 	
-	public Shops(int id, String name, Categories category, Double latitude,
-			Double longitude, int localityId, String address) {
+	public Shops(Integer id, String name, Categories category, Double latitude,
+			Double longitude, Integer localityId, String address) {
 		this.id = id;
 		this.name = name;
 		this.category = category;
@@ -52,12 +52,13 @@ public class Shops {
 		this.localityId = localityId;
 		this.address = address;
 	}
+	
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -93,11 +94,11 @@ public class Shops {
 		this.longitude = longitude;
 	}
 
-	public int getLocalityId() {
+	public Integer getLocalityId() {
 		return localityId;
 	}
 
-	public void setLocalityId(int localityId) {
+	public void setLocalityId(Integer localityId) {
 		this.localityId = localityId;
 	}
 

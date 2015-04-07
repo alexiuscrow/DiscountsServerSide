@@ -7,18 +7,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hibernate.annotations.GenericGenerator;
-
 
 @XmlRootElement
 @Entity
 @Table(name = "localities")
 public class Localities {
 	@Id
-	@GeneratedValue(generator="increment")
-	@GenericGenerator(name="increment", strategy = "increment")
+	@GeneratedValue
 	@Column(name="id")
-	private int id;
+	private Integer id;
 	
 	@Column(name="name")
 	private String name;
@@ -26,15 +23,15 @@ public class Localities {
 	public Localities() {
 	}
 	
-	public Localities(int id, String name) {
+	public Localities(Integer id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 	
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getName() {

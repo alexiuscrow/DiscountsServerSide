@@ -1,57 +1,38 @@
 package alexiuscrow.diploma.entity.plus;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hibernate.annotations.Immutable;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
+import alexiuscrow.diploma.entity.Localities;
+import alexiuscrow.diploma.entity.Shops;
 import alexiuscrow.diploma.entity.enums.Categories;
+import alexiuscrow.diploma.util.GeoFinder;
 
 @XmlRootElement
-@Entity
-@Immutable
 public class ShopsPlus{
 	
-	@Id
-	@GeneratedValue
-	@Column(name="id")
-	protected int id;
-	
-	@Column(name="name", length=45)
+
+	protected Integer id;
 	protected String name;
-	
-	@Column(name="category")
-	@Enumerated(EnumType.STRING)
 	protected Categories category;
-	
-	@Column(name="latitude")
 	protected Double latitude;
-	
-	@Column(name="longitude")
 	protected Double longitude;
-	
-	@Column(name="locality_id")
-	protected int localityId;
-	
-	@Column(name="address", length=80)
+	protected Integer localityId;
 	protected String address;
-	
-	@Column(name="locality_name", insertable=false, updatable=false)
 	private String localityName;
-	
-	@Column(name="distance", insertable=false, updatable=false)
-	private Integer distance;
+	private Double distance;
 	
 	public ShopsPlus(){}
 	
-	public ShopsPlus(int id, String name, Categories category, Double latitude,
-			Double longitude, int localityId, String address,
-			String localityName, Integer distance) {
+	public ShopsPlus(Integer id, String name, Categories category, Double latitude,
+			Double longitude, Integer localityId, String address,
+			String localityName, Double distance) {
 		this.id = id;
 		this.name = name;
 		this.category = category;
@@ -63,13 +44,72 @@ public class ShopsPlus{
 		this.distance = distance;
 	}
 
+	public void eatUp(Shops shop){
+		this.id = shop.getId();
+		this.name = shop.getName();
+		this.category = shop.getCategory();
+		this.latitude = shop.getLatitude();
+		this.longitude = shop.getLongitude();
+		this.localityId = shop.getLocalityId();
+		this.address = shop.getAddress();
+	}
+	
+	public static ShopsPlus eatUp(Shops fromShop, ShopsPlus toShop){
+		toShop.setId(fromShop.getId());
+		toShop.setName(fromShop.getName());
+		toShop.setCategory(fromShop.getCategory());
+		toShop.setLatitude(fromShop.getLatitude());
+		toShop.setLongitude(fromShop.getLongitude());
+		toShop.setLocalityId(fromShop.getLocalityId());
+		toShop.setAddress(fromShop.getAddress());
 
+		return toShop;
+	}
+	
+	public static ArrayList<ShopsPlus> eatUp(List<Shops> shops){
+		ArrayList<ShopsPlus> shopsPlus = new ArrayList<ShopsPlus>();
+		ShopsPlus shopPlus = new ShopsPlus();
+		
+		for(Shops shop: shops){
+			shopPlus = eatUp(shop, shopPlus);
+			shopsPlus.add(shopPlus);
+		}
+		
+		return shopsPlus;
+	}
+	
+	public static ArrayList<ShopsPlus> eatNourishing(List<Shops> shops, Double lat, Double lng, Session session){
+		ArrayList<ShopsPlus> shopsPlus = new ArrayList<ShopsPlus>();
+		ShopsPlus shopPlus = null;
+		
+//		Criteria cr  = session.createCriteria(Localities.class);
+		Localities locality = null;
+		
+		for(Shops shop: shops){
+			shopPlus = new ShopsPlus();
+			shopPlus = eatUp(shop, shopPlus);
+			shopPlus.distance = GeoFinder.getDistance(lat, lng, shop);
+			Criteria cr = session.createCriteria(Localities.class);
+			System.out.println(shopPlus);
+			cr.add(Restrictions.eq("id", shop.getId()));
+			locality = (Localities) cr.uniqueResult();
+			System.out.println(locality.getName());
+			shopPlus.setLocalityName(locality.getName());
+			shopsPlus.add(shopPlus);
+		}
+		return shopsPlus;
+	}
+	
+	
+	public void eatUp(Localities locality){
+		this.localityName = locality.getName();
+	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -105,11 +145,11 @@ public class ShopsPlus{
 		this.longitude = longitude;
 	}
 
-	public int getLocalityId() {
+	public Integer getLocalityId() {
 		return localityId;
 	}
 
-	public void setLocalityId(int localityId) {
+	public void setLocalityId(Integer localityId) {
 		this.localityId = localityId;
 	}
 
@@ -129,64 +169,21 @@ public class ShopsPlus{
 		this.localityName = localityName;
 	}
 
-	public Integer getDistance() {
+	public Double getDistance() {
 		return distance;
 	}
 
-	public void setDistance(Integer distance) {
+	public void setDistance(Double distance) {
 		this.distance = distance;
+	}
+
+	@Override
+	public String toString() {
+		return String
+				.format("ShopsPlus [id=%s, name=%s, category=%s, latitude=%s, longitude=%s, localityId=%s, address=%s, localityName=%s, distance=%s]",
+						id, name, category, latitude, longitude, localityId,
+						address, localityName, distance);
 	}
 }
 
 
-/*
-package alexiuscrow.diploma.entity.plus;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.hibernate.annotations.Immutable;
-
-import alexiuscrow.diploma.entity.Shops;
-import alexiuscrow.diploma.entity.enums.Categories;
-
-@XmlRootElement
-@Entity
-//@MappedSuperclass
-//@DiscriminatorValue(value="plus")
-@Immutable
-public class ShopsPlus extends Shops {
-	@Column(name="locality_name")
-	private String localityName;
-	@Column(name="distance")
-	private Integer distance;
-	
-	public ShopsPlus(){}
-
-	public ShopsPlus(int id, String name, Categories category, Double latitude,
-			Double longitude, int localityId, String address, String localityName, Integer distance) {
-		
-		super(id, name, category, latitude, longitude, localityId, address);
-		this.localityName = localityName;
-		this.distance = distance;
-	}
-
-	public String getLocalityName() {
-		return localityName;
-	}
-
-	public void setLocalityName(String localityName) {
-		this.localityName = localityName;
-	}
-
-	public Integer getDistance() {
-		return distance;
-	}
-
-	public void setDistance(Integer distance) {
-		this.distance = distance;
-	}
-}
-
-*/

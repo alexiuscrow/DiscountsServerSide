@@ -3,7 +3,6 @@ package alexiuscrow.diploma.entity.plus;
 import java.util.Calendar;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
@@ -13,8 +12,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.Immutable;
 
 @XmlRootElement
-@Entity
 @Immutable
+
 public class DiscountsPlus {
 	
 	@Id

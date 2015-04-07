@@ -19,6 +19,7 @@ public class DiscountsPlusDAOImpl implements DiscountsPlusDAO {
 	public List<DiscountsPlus> getNearestDiscounts(Double lat, Double lng, Integer radius) 
 			throws SQLException {
 		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.setDefaultReadOnly(false);
 		Transaction tx = null;
 	    List discounts = null;
 	    try{
@@ -28,7 +29,7 @@ public class DiscountsPlusDAOImpl implements DiscountsPlusDAO {
 	    		   .setString(0, lat.toString())
 	    		   .setString(1, lng.toString())
 	    		   .setString(2, radius.toString());
-	       discounts = query.list(); 
+	       discounts = query.setReadOnly(true).list(); 
 	       tx.commit();
 	    }catch (HibernateException e) {
 	       if (tx!=null) tx.rollback();
@@ -43,6 +44,7 @@ public class DiscountsPlusDAOImpl implements DiscountsPlusDAO {
 	public List<DiscountsPlus> getAllLocalityDiscounts(Double lat, Double lng)
 			throws SQLException {
 		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.setDefaultReadOnly(false);
 		Transaction tx = null;
 	    List discounts = null;
 	    String localityName = GeoFinder.getLocalityName(lat, lng);
@@ -57,8 +59,7 @@ public class DiscountsPlusDAOImpl implements DiscountsPlusDAO {
 	    		   .addEntity(DiscountsPlus.class)
 	    		   .setString(0, lat.toString())
 	    		   .setString(1, lng.toString())
-	    		   .setString(2, localityName);
-	    		   ;
+	    		   .setString(2, localityName).setReadOnly(true);
 	       discounts = query.list(); 
 	       tx.commit();
 	    }catch (HibernateException e) {
