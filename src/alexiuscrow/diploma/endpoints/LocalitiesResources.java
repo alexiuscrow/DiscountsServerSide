@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import alexiuscrow.diploma.dao.Factory;
 import alexiuscrow.diploma.entity.Localities;
@@ -13,7 +14,7 @@ import alexiuscrow.diploma.entity.Localities;
 public class LocalitiesResources {
 	
 	@GET
-	@Produces("application/json")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Localities getLocalities() throws SQLException{
 		return Factory.getInstance().getLicalities().getAllLocalities().get(0);
 	}

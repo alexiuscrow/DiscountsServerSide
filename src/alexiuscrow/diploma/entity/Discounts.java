@@ -6,10 +6,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @XmlRootElement
 @Entity
@@ -38,21 +42,23 @@ public class Discounts {
 	@Column(name="image")
 	private String imageUrl;
 	
-	@Column(name="shop_id")
-	private Integer shopId;
+	@ManyToOne
+	@JoinColumn(name = "shop_id", referencedColumnName="id" ,nullable = false)
+	@JsonBackReference
+	private Shops shop;
 
 	public Discounts() {
 	}
 
 	public Discounts(Integer id, String title, Calendar startDate, Calendar endDate,
-			String description, String imageUrl, Integer shopId) {
+			String description, String imageUrl, Shops shop) {
 		this.id = id;
 		this.title = title;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.description = description;
 		this.imageUrl = imageUrl;
-		this.shopId = shopId;
+		this.shop = shop;
 	}
 
 	public Integer getId() {
@@ -103,20 +109,19 @@ public class Discounts {
 		this.imageUrl = imageUrl;
 	}
 
-	public Integer getShopId() {
-		return shopId;
+	public Shops getShop() {
+		return shop;
 	}
 
-	public void setShopId(Integer shopId) {
-		this.shopId = shopId;
+	public void setShop(Shops shop) {
+		this.shop = shop;
 	}
 
 	@Override
 	public String toString() {
 		return String
-				.format("Discounts [id=%s, title=%s, startDate=%s, endDate=%s, description=%s, imageUrl=%s, shopId=%s]",
-						id, title, startDate, endDate, description, imageUrl,
-						shopId);
+				.format("Discounts [id=%s, title=%s, startDate=%s, endDate=%s, description=%s, imageUrl=%s]",
+						id, title, startDate, endDate, description, imageUrl);
 	}
 	
 }

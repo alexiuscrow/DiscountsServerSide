@@ -11,18 +11,21 @@ API *v1*
 |Discounts in a nearest shops | /shops/discounts?radius=200&lat=12.14&lng=15.67 | 
 |All shops in a city          | /shops?lat=12.14&lng=15.67                      | 
 |All discounts in a city      | /shops/discounts?lat=12.14&lng=15.67            | 
-|Categories                   | /categories                                     | 
-|Images                       | /images?id=1                                    | 
+|All localities               | /localities                                     |  
+|Categories[^enum]            | /categories                                     | 
+|Image                        | /images/{id}                                        |
 
 ####POST Methods     
 
 |what                         | how                                             | 
 |-----------------------------|-------------------------------------------------|
-|Feedback                     | /feedbacks                                      |
-|New discount                 | /discounts                                      |    
-|New shop                     | /shops                                          | 
+|Feedback[^notimpl]           | /feedbacks                                      |
+|New discount[^notimpl]       | /discounts                                      |    
+|New shop[^notimpl]           | /shops                                          | 
 
 
+[^enum]: Enumeration
+[^notimpl]:Not implemented.
 
 
 
