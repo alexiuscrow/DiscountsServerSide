@@ -19,14 +19,14 @@ API *v1*
 
 |what                         | how                                             | 
 |-----------------------------|-------------------------------------------------|
-|Feedback [^notimpl]           | /feedbacks                                      |
-|New discount [^notimpl]       | /discounts                                      |    
-|New shop [^notimpl]           | /shops                                          | 
+|Feedback [^1]           | /feedbacks                                      |
+|New discount [^2]       | /discounts                                      |    
+|New shop [^2]           | /shops                                          | 
 
 
-[^enum]: Enumeration
+[^1]: Enumeration
 
-[^notimpl]:Not implemented.
+[^2]: Not implemented.
 
 
 
