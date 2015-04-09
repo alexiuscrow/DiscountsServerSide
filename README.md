@@ -12,19 +12,20 @@ API *v1*
 |All shops in a city          | /shops?lat=12.14&lng=15.67                      | 
 |All discounts in a city      | /shops/discounts?lat=12.14&lng=15.67            | 
 |All localities               | /localities                                     |  
-|Categories[^enum]            | /categories                                     | 
+|Categories [^enum]            | /categories                                     | 
 |Image                        | /images/{id}                                        |
 
 ####POST Methods     
 
 |what                         | how                                             | 
 |-----------------------------|-------------------------------------------------|
-|Feedback[^notimpl]           | /feedbacks                                      |
-|New discount[^notimpl]       | /discounts                                      |    
-|New shop[^notimpl]           | /shops                                          | 
+|Feedback [^notimpl]           | /feedbacks                                      |
+|New discount [^notimpl]       | /discounts                                      |    
+|New shop [^notimpl]           | /shops                                          | 
 
 
 [^enum]: Enumeration
+
 [^notimpl]:Not implemented.
 
 
