@@ -26,14 +26,14 @@ public class ShopsResources {
 			@QueryParam("lng") String lngParam) throws SQLException{
 		
 		if (Validator.isItDouble(latParam) && Validator.isItDouble(lngParam)){
-			Range<Integer> rangeRadius = Range.atMost(1000);
+			Range<Double> rangeRadius = Range.atMost(1000d);
 			
 			Double lat = Double.valueOf(latParam);
 			Double lng = Double.valueOf(lngParam);
 			
-			if (Validator.isItInteger(radiusParam) && rangeRadius.contains(Integer.parseInt(radiusParam))){
+			if (Validator.isItDouble(radiusParam) && rangeRadius.contains(Double.parseDouble(radiusParam))){
 				//return shops in a nearest shops
-				Integer radius = Integer.valueOf(radiusParam);
+				Double radius = Double.valueOf(radiusParam);
 				return Factory.getInstance().getShops().getNearestShops(lat, lng, radius);
 			}
 			else {

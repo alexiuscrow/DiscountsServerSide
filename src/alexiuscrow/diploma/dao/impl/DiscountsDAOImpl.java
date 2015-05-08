@@ -1,12 +1,7 @@
 package alexiuscrow.diploma.dao.impl;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -19,10 +14,10 @@ import alexiuscrow.diploma.entity.Localities;
 import alexiuscrow.diploma.entity.Shops;
 import alexiuscrow.diploma.util.GeoFinder;
 import alexiuscrow.diploma.util.HibernateUtil;
+import alexiuscrow.diploma.util.serializers.NearestShopsSerializer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class DiscountsDAOImpl implements DiscountsDAO {
 
@@ -62,15 +57,11 @@ public class DiscountsDAOImpl implements DiscountsDAO {
 	    		   .setString(2, radius.toString());
 	       
 	       List<Shops> shops = query.list(); 
-//	       localities = pack(shops, lat, lng);;
-	       
-			ObjectWriter ow = new ObjectMapper().writer()
-					.withDefaultPrettyPrinter();
-			try {
-				result = ow.writeValueAsString(shops);
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-			}
+	       putDistance(shops, lat, lng);
+	       Gson gson = new GsonBuilder().registerTypeAdapter(Shops.class, new NearestShopsSerializer())
+	    		   .excludeFieldsWithoutExposeAnnotation()
+	    		   .setPrettyPrinting().create();
+		   result = gson.toJson(shops);
 	       
 	       tx.commit();
 	    }catch (HibernateException e) {
@@ -105,52 +96,35 @@ public class DiscountsDAOImpl implements DiscountsDAO {
 	    		   .setString(2, localityName);
 	       
 	       List<Shops> shops = query.list();
-//	       localities = pack(shops, lat, lng);
-	       
-			ObjectWriter ow = new ObjectMapper().writer()
-					.withDefaultPrettyPrinter();
-			try {
-				result = ow.writeValueAsString(shops);
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-			}
-	       
+	       Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+					.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").setPrettyPrinting().create();
+		   result = gson.toJson(shops);
+		   
 	       tx.commit();
+	       
 	    }catch (HibernateException e) {
 	       if (tx!=null) tx.rollback();
 	       e.printStackTrace(); 
-	    }finally {
+	    } finally {
 	       session.close(); 
 	    }
         return result;
 	}
 	
-	private List<Localities> pack(List<Shops> shops, Double lat, Double lng){
-		List<Localities> localities = new ArrayList<Localities>(0);
-		
-		Map<Integer, Set<Shops>> shopsAddedYet = new HashMap<Integer, Set	<Shops>>();
-		
+	private void putDistance(List<Shops> shops, Double lat, Double lng){
 		for(Shops shop: shops){
-	    	   shop.setDistance(GeoFinder.getDistance(lat, lng, shop)); // "@Transient" field
-	    	   
-	    	   Localities locality = shop.getLocality();
-	    	   
-	    	   if (!localities.contains(locality)){
-	    		   localities.add(locality);
-	    	   }
-	    	   
-	    	   if (!shopsAddedYet.containsKey(locality.getId())){
-	    		   shopsAddedYet.put(locality.getId(), new LinkedHashSet<Shops>(0));
-	    	   }
-	    	   
-	    	   shopsAddedYet.get(locality.getId()).add(shop);
+	    	   shop.setDistance(GeoFinder.getDistance(lat, lng, shop));
 	    }
-		
-		for(Localities locality: localities){
-			locality.setShops(shopsAddedYet.get(locality.getId()));
-		}
-		
-		return localities;	
 	}
+	
+	public static String convertToUTF8(String s) {
+        String out = null;
+        try {
+            out = new String(s.getBytes("UTF-8"), "ISO-8859-1");
+        } catch (java.io.UnsupportedEncodingException e) {
+            return null;
+        }
+        return out;
+    }
 
 }

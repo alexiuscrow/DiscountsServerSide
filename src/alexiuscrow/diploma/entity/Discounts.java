@@ -1,6 +1,6 @@
 package alexiuscrow.diploma.entity;
 
-import java.util.Calendar;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,33 +14,40 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.google.gson.annotations.Expose;
 
 @XmlRootElement
 @Entity
 @Table(name="discounts")
 public class Discounts {
-	
+	@Expose
 	@Id
 	@GeneratedValue
 	@Column(name="id")
 	private Integer id;
 	
+	@Expose
 	@Column(name="title")
 	private String title;
 	
+	@Expose
 	@Column(name="start_date")
 	@Temporal(TemporalType.DATE) 
-	private Calendar startDate;
+	private Date startDate;
 	
+	@Expose
 	@Column(name="end_date")
 	@Temporal(TemporalType.DATE) 
-	private Calendar endDate;
+	private Date endDate;
 	
+	@Expose
 	@Column(name="description")
 	private String description;
 	
+	@Expose
 	@Column(name="image")
 	private String imageUrl;
+	
 	
 	@ManyToOne
 	@JoinColumn(name = "shop_id", referencedColumnName="id" ,nullable = false)
@@ -50,7 +57,7 @@ public class Discounts {
 	public Discounts() {
 	}
 
-	public Discounts(Integer id, String title, Calendar startDate, Calendar endDate,
+	public Discounts(Integer id, String title, Date startDate, Date endDate,
 			String description, String imageUrl, Shops shop) {
 		this.id = id;
 		this.title = title;
@@ -77,19 +84,19 @@ public class Discounts {
 		this.title = title;
 	}
 
-	public Calendar getStartDate() {
+	public Date getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Calendar startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
-	public Calendar getEndDate() {
+	public Date getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Calendar endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 

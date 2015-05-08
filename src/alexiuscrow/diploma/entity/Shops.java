@@ -20,42 +20,52 @@ import alexiuscrow.diploma.entity.enums.Categories;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.google.gson.annotations.Expose;
 
 
 @XmlRootElement
 @Entity
 @Table(name = "shops")
 public class Shops {
+	@Expose
 	@Id
 	@GeneratedValue
 	@Column(name="id", unique=true, nullable=false)
 	protected Integer id;
 	
+	@Expose
 	@Column(name="name", length=45, nullable=false)
 	protected String name;
 	
+	@Expose
 	@Column(name="category", columnDefinition="ENUM('undefined','auto','children_prod','food','game','book','electronics','beuty_and_health','fashion','footwear','clothing','sports','homewere','pet_prod','services','gift_and_flowers')",
 			nullable=false)
 	@Enumerated(EnumType.STRING)
 	protected Categories category;
 	
+	@Expose
 	@Column(name="latitude", nullable=false)
 	protected Double latitude;
 	
+	@Expose
 	@Column(name="longitude",nullable=false)
 	protected Double longitude;
+	
 	
 	@ManyToOne
 	@JoinColumn(name = "locality_id", referencedColumnName="id")
 	@JsonBackReference
 	protected Localities locality;
 	
+	@Expose
 	@Column(name="address", length=80, nullable=false)
 	protected String address;
 	
+//	@Expose
 	@Transient
 	private Double distance;
 	
+	@Expose
 	@OneToMany( mappedBy = "shop")
 	@JsonManagedReference
 	private Set<Discounts> discounts = new HashSet<Discounts>(0);
