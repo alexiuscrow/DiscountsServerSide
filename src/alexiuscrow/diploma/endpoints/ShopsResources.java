@@ -9,25 +9,34 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import alexiuscrow.diploma.dao.Factory;
 import alexiuscrow.diploma.entity.Shops;
-import alexiuscrow.diploma.util.Validator;
 
 import com.google.common.collect.Range;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 
 @Path("/shops")
 @Api(value = "Shops", description = "Operations about shops")
 public class ShopsResources {
+	private final Double MIN_RADIUS_VALUE = 0d;
+	private final Double MAX_RADIUS_VALUE = 1000d;
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Ok", response = Shops.class),
+			@ApiResponse(code = 204, message = "No content"),
+			@ApiResponse(code = 400, message = "Some parameters does not have the appropriate format or radius goes beyond the range.")
+			})
 	@ApiOperation(value = "List shops", httpMethod = "GET", notes = "List nearest or locality shops",
 	response = Shops.class, responseContainer = "List")
-//	@ApiOperation(value = "List shops", httpMethod = "GET", notes = "List nearest or locality shops")
 	public String getShops(
 			@ApiParam( value = "Latitude", required = true)
 			@DefaultValue("51.522256")
@@ -41,24 +50,39 @@ public class ShopsResources {
 			@QueryParam("radius") 
 			String radiusParam) throws SQLException{
 		
-		if (Validator.isItDouble(latParam) && Validator.isItDouble(lngParam)){
-			Range<Double> rangeRadius = Range.atMost(1000d);
-			
+		try{
 			Double lat = Double.valueOf(latParam);
 			Double lng = Double.valueOf(lngParam);
+			Range<Double> rangeRadius = Range.closed(MIN_RADIUS_VALUE, MAX_RADIUS_VALUE);
 			
-			if (Validator.isItDouble(radiusParam) && rangeRadius.contains(Double.parseDouble(radiusParam))){
-				//return shops in a nearest shops
-				Double radius = Double.valueOf(radiusParam);
-				return Factory.getInstance().getShops().getNearestShops(lat, lng, radius);
+			//If the radius was specified
+			if (null != radiusParam){
+				try{
+					if (rangeRadius.contains(Double.parseDouble(radiusParam))){
+						Double radius = Double.valueOf(radiusParam);
+						return Factory.getInstance().getShops().getNearestShops(lat, lng, radius);
+					}
+					else{
+						//Radius goes beyond the range
+						throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+								.entity("Radius goes beyond the range. Min value: " + rangeRadius.lowerEndpoint()
+										+ ". Max value: " + rangeRadius.upperEndpoint() + ".").type(MediaType.TEXT_PLAIN).build());
+					}
+				}
+				catch(NumberFormatException e){
+					//Radius does not have the appropriate format
+					throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+							.entity("Radius does not have the appropriate format.").type(MediaType.TEXT_PLAIN).build());
+				}
 			}
 			else {
-				//return all shops in a locality
 				return Factory.getInstance().getShops().getAllLocalityShops(lat, lng);
 			}
 		}
-		else{
-			throw new WebApplicationException(400);
+		catch(NumberFormatException e){
+			//Latitude or longitude does not have the appropriate format
+			throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+					.entity("Latitude or longitude does not have the appropriate format.").type(MediaType.TEXT_PLAIN).build());
 		}
 	}
 }

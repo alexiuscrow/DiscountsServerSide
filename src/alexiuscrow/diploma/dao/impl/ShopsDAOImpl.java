@@ -58,6 +58,7 @@ public class ShopsDAOImpl implements ShopsDAO {
 	    		   .setString(2, radius.toString());
 	       
 	       List<Shops> shops = query.list(); 
+	       if (null != shops && 0 == shops.size()) return null;
 	       putDistance(shops, lat, lng);
 	       Gson gson = new GsonBuilder().registerTypeAdapter(Shops.class, new NearestShopsSerializer())
 	    		   .excludeFieldsWithoutExposeAnnotation()
@@ -97,6 +98,7 @@ public class ShopsDAOImpl implements ShopsDAO {
 	    		   .setString(2, localityName);
 	       
 	       List<Shops> shops = query.list();
+	       if (null != shops && 0 == shops.size()) return null;
 	       Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
 					.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").setPrettyPrinting().create();
 		   result = gson.toJson(shops);

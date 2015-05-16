@@ -16,7 +16,6 @@ import alexiuscrow.diploma.util.Validator;
 
 import com.google.common.collect.Range;
 
-
 @Path("/shops/discounts")
 public class DiscountsResources {
 

@@ -1,7 +1,11 @@
 package alexiuscrow.diploma.util;
 
+/**
+ *@deprecated Better use try/catch ;)
+ */
+@Deprecated
 public abstract class Validator {
-	
+
 	public static boolean isItDouble(String str){
 		try {  
 			if (Validator.isItNull(str)){
