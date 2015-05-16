@@ -15,40 +15,49 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.gson.annotations.Expose;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
+@ApiModel(value = "Discounts", description = "Discounts resource representation" )
 @XmlRootElement
 @Entity
 @Table(name="discounts")
 public class Discounts {
+	@ApiModelProperty( value = "Discounts's identifier", required = true )
 	@Expose
 	@Id
 	@GeneratedValue
 	@Column(name="id")
 	private Integer id;
 	
+	@ApiModelProperty( value = "Discounts's title", required = true )
 	@Expose
 	@Column(name="title")
 	private String title;
 	
+	@ApiModelProperty( value = "Discounts's start date", required = true )
 	@Expose
 	@Column(name="start_date")
 	@Temporal(TemporalType.DATE) 
 	private Date startDate;
 	
+	@ApiModelProperty( value = "Discounts's end date", required = true )
 	@Expose
 	@Column(name="end_date")
 	@Temporal(TemporalType.DATE) 
 	private Date endDate;
 	
+	@ApiModelProperty( value = "Discounts's description", required = true )
 	@Expose
 	@Column(name="description")
 	private String description;
 	
+	@ApiModelProperty( value = "Discounts's image name", required = true )
 	@Expose
 	@Column(name="image")
 	private String imageUrl;
 	
-	
+	@ApiModelProperty(hidden = true)
 	@ManyToOne
 	@JoinColumn(name = "shop_id", referencedColumnName="id" ,nullable = false)
 	@JsonBackReference

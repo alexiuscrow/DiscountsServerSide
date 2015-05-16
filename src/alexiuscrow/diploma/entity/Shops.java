@@ -21,50 +21,60 @@ import alexiuscrow.diploma.entity.enums.Categories;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.gson.annotations.Expose;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
-
+@ApiModel(value = "Shops", description = "Shops resource representation" )
 @XmlRootElement
 @Entity
 @Table(name = "shops")
 public class Shops {
+	@ApiModelProperty( value = "Shop's identifier", required = true )
 	@Expose
 	@Id
 	@GeneratedValue
 	@Column(name="id", unique=true, nullable=false)
 	protected Integer id;
 	
+	@ApiModelProperty(value = "Shop's name", required = true )
 	@Expose
 	@Column(name="name", length=45, nullable=false)
 	protected String name;
 	
+	@ApiModelProperty(value = "Shop's category", required = true )
 	@Expose
 	@Column(name="category", columnDefinition="ENUM('undefined','auto','children_prod','food','game','book','electronics','beuty_and_health','fashion','footwear','clothing','sports','homewere','pet_prod','services','gift_and_flowers')",
 			nullable=false)
 	@Enumerated(EnumType.STRING)
 	protected Categories category;
 	
+	@ApiModelProperty(value = "Shop's latitude", required = true )
 	@Expose
 	@Column(name="latitude", nullable=false)
 	protected Double latitude;
 	
+	@ApiModelProperty(value = "Shop's longitude", required = true )
 	@Expose
-	@Column(name="longitude",nullable=false)
+	@Column(name="longitude",nullable = false)
 	protected Double longitude;
 	
-	
+	@ApiModelProperty(hidden = true)
 	@ManyToOne
 	@JoinColumn(name = "locality_id", referencedColumnName="id")
 	@JsonBackReference
 	protected Localities locality;
 	
+	@ApiModelProperty(value = "Shop's address", required = true )
 	@Expose
 	@Column(name="address", length=80, nullable=false)
 	protected String address;
 	
 //	@Expose
+	@ApiModelProperty(value = "Disctance to shop", required = true )
 	@Transient
 	private Double distance;
 	
+	@ApiModelProperty(value = "Shop's discounts set", required = true )
 	@Expose
 	@OneToMany( mappedBy = "shop")
 	@JsonManagedReference
